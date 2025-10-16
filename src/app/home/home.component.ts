@@ -1,12 +1,9 @@
-import {Component, computed, effect, inject, Injector, signal} from '@angular/core';
-import {CoursesService} from "../services/courses.service";
-import {Course, sortCoursesBySeqNo} from "../models/course.model";
-import {MatTab, MatTabGroup} from "@angular/material/tabs";
-import {CoursesCardListComponent} from "../courses-card-list/courses-card-list.component";
-import {MatDialog} from "@angular/material/dialog";
-import {MessagesService} from "../messages/messages.service";
-import {catchError, from, throwError} from "rxjs";
-import {toObservable, toSignal, outputToObservable, outputFromObservable} from "@angular/core/rxjs-interop";
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { MatTab, MatTabGroup } from "@angular/material/tabs";
+import { CoursesCardListComponent } from "../courses-card-list/courses-card-list.component";
+import { Course } from '../models/course.model';
+import { CoursesServiceWithFetch } from '../services/courses-fetch.service';
+import { CoursesService } from '../services/courses.service';
 
 @Component({
     selector: 'home',
@@ -19,5 +16,30 @@ import {toObservable, toSignal, outputToObservable, outputFromObservable} from "
     styleUrl: './home.component.scss'
 })
 export class HomeComponent {
+  private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
+  private readonly coursesServiceHttp = inject(CoursesService);
 
+  courses = signal<Course[]>([]);
+
+  constructor() {
+    this.loadAllCourses().then(
+      () => console.log('All courses loaded: ', this.courses())
+    );
+  }
+
+  async loadAllCourses() {
+    // try {
+    //   const courses = await this.coursesServiceWithFetch.loadAllCourses();
+    //   this.courses.set(courses);
+    // } catch (error) {
+    //   console.warn('Error loading courses: ', error);
+    // }
+    
+    try {
+      const courses = await this.coursesServiceHttp.loadAllCourses();
+      this.courses.set(courses);
+    } catch (error) {
+      console.warn('Error loading courses: ', error);
+    }
+  }
 }
