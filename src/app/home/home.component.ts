@@ -1,8 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { CoursesCardListComponent } from "../courses-card-list/courses-card-list.component";
-import { Course } from '../models/course.model';
-import { CoursesServiceWithFetch } from '../services/courses-fetch.service';
+import { Course, sortCoursesBySeqNo } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
 
 @Component({
@@ -16,14 +15,21 @@ import { CoursesService } from '../services/courses.service';
     styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
+  // private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
   private readonly coursesServiceHttp = inject(CoursesService);
 
-  courses = signal<Course[]>([]);
+  _courses = signal<Course[]>([]);
+
+  beginnerCourses = computed(
+    () => this._courses().filter(courses => courses.category === "BEGINNER")
+  );
+  advancedCourses = computed(
+    () => this._courses().filter(courses => courses.category === "ADVANCED")
+  );
 
   constructor() {
     this.loadAllCourses().then(
-      () => console.log('All courses loaded: ', this.courses())
+      () => console.log('All courses loaded: ', this._courses())
     );
   }
 
@@ -37,7 +43,8 @@ export class HomeComponent {
     
     try {
       const courses = await this.coursesServiceHttp.loadAllCourses();
-      this.courses.set(courses);
+      const orderedCourses = courses.sort((a,b) =>  sortCoursesBySeqNo(a,b));
+      this._courses.set(orderedCourses);
     } catch (error) {
       console.warn('Error loading courses: ', error);
     }
