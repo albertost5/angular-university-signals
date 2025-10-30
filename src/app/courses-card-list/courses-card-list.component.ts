@@ -6,6 +6,7 @@ import {
 import { RouterLink } from "@angular/router";
 import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 import { Course } from '../models/course.model';
+import { CoursesService } from '../services/courses.service';
 
 
 @Component({
@@ -18,9 +19,11 @@ import { Course } from '../models/course.model';
 })
 export class CoursesCardListComponent {
   dialog = inject(MatDialog);
+  courseService = inject(CoursesService);
 
   courses = input<Course[]>();
   newCourse = output<Course>();
+  deletedCourse = output<string>();
 
   async onEdit(course: Course) {
     const newCourse = await openEditCourseDialog(this.dialog , {
@@ -29,5 +32,9 @@ export class CoursesCardListComponent {
       course
     });
     this.newCourse.emit(newCourse);
+  }
+
+  async onDelete(courseId: string) {
+    this.deletedCourse.emit(courseId)
   }
 }

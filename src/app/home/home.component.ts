@@ -55,4 +55,14 @@ export class HomeComponent {
     const newCourses = courses.map( c => c.id === course.id ? course : c);
     this.#courses.set(newCourses);
   }
+
+  async onDeletedCourse(courseId: string) {
+    try {
+      await this.coursesServiceHttp.deleteCourse(courseId);
+      this.#courses.update(courses => courses.filter(c => c.id !== courseId))
+    } catch (error) {
+      console.warn(error);
+      alert('There was a problem deleting the course.');
+    }
+  }
 }

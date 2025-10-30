@@ -22,4 +22,8 @@ export class CoursesService {
   updateCourse(course: Partial<Course>, courseId: string) {
     return firstValueFrom(this.http.put<Course>(`${this.env.baseUrl}/courses/${courseId}`, course));
   }
+
+  deleteCourse(courseId: string) {
+    return firstValueFrom(this.http.delete(`${this.env.baseUrl}/courses/${courseId}`));
+  }
 }
