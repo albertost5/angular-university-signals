@@ -18,4 +18,8 @@ export class CoursesService {
       map(res => res.courses)
     ));
   }
+
+  updateCourse(course: Partial<Course>, courseId: string) {
+    return firstValueFrom(this.http.put<Course>(`${this.env.baseUrl}/courses/${courseId}`, course));
+  }
 }

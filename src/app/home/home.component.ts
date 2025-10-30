@@ -18,18 +18,18 @@ export class HomeComponent {
   // private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
   private readonly coursesServiceHttp = inject(CoursesService);
 
-  _courses = signal<Course[]>([]);
+  #courses = signal<Course[]>([]);
 
   beginnerCourses = computed(
-    () => this._courses().filter(courses => courses.category === "BEGINNER")
+    () => this.#courses().filter(courses => courses.category === "BEGINNER")
   );
   advancedCourses = computed(
-    () => this._courses().filter(courses => courses.category === "ADVANCED")
+    () => this.#courses().filter(courses => courses.category === "ADVANCED")
   );
 
   constructor() {
     this.loadAllCourses().then(
-      () => console.log('All courses loaded: ', this._courses())
+      () => console.log('All courses loaded: ', this.#courses())
     );
   }
 
@@ -40,13 +40,19 @@ export class HomeComponent {
     // } catch (error) {
     //   console.warn('Error loading courses: ', error);
     // }
-    
+
     try {
       const courses = await this.coursesServiceHttp.loadAllCourses();
       const orderedCourses = courses.sort((a,b) =>  sortCoursesBySeqNo(a,b));
-      this._courses.set(orderedCourses);
+      this.#courses.set(orderedCourses);
     } catch (error) {
       console.warn('Error loading courses: ', error);
     }
+  }
+
+  onCourseUpdate(course: Course) {
+    const courses = this.#courses();
+    const newCourses = courses.map( c => c.id === course.id ? course : c);
+    this.#courses.set(newCourses);
   }
 }

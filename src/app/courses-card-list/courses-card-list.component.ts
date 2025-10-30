@@ -1,5 +1,10 @@
-import {Component, input} from '@angular/core';
-import {RouterLink} from "@angular/router";
+import { Component, inject, input, output } from '@angular/core';
+import {
+  MatDialog,
+  MatDialogRef
+} from '@angular/material/dialog';
+import { RouterLink } from "@angular/router";
+import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 import { Course } from '../models/course.model';
 
 
@@ -12,5 +17,17 @@ import { Course } from '../models/course.model';
     styleUrl: './courses-card-list.component.scss'
 })
 export class CoursesCardListComponent {
-    courses = input<Course[]>();
+  dialog = inject(MatDialog);
+
+  courses = input<Course[]>();
+  newCourse = output<Course>();
+
+  async onEdit(course: Course) {
+    const newCourse = await openEditCourseDialog(this.dialog , {
+      mode: 'update',
+      title: 'Update existing course',
+      course
+    });
+    this.newCourse.emit(newCourse);
+  }
 }
