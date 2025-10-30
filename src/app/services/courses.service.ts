@@ -26,4 +26,8 @@ export class CoursesService {
   deleteCourse(courseId: string) {
     return firstValueFrom(this.http.delete(`${this.env.baseUrl}/courses/${courseId}`));
   }
+
+  createCourse(course: Partial<Course>) {
+    return firstValueFrom(this.http.post<Course>(`${this.env.baseUrl}/courses`, course))
+  }
 }

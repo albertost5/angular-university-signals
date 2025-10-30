@@ -3,6 +3,8 @@ import { MatTab, MatTabGroup } from "@angular/material/tabs";
 import { CoursesCardListComponent } from "../courses-card-list/courses-card-list.component";
 import { Course, sortCoursesBySeqNo } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
+import { MatDialog } from '@angular/material/dialog';
+import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
 
 @Component({
     selector: 'home',
@@ -17,6 +19,7 @@ import { CoursesService } from '../services/courses.service';
 export class HomeComponent {
   // private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
   private readonly coursesServiceHttp = inject(CoursesService);
+  dialog = inject(MatDialog);
 
   #courses = signal<Course[]>([]);
 
@@ -64,5 +67,13 @@ export class HomeComponent {
       console.warn(error);
       alert('There was a problem deleting the course.');
     }
+  }
+
+  async onAddCourse() {
+    const newCourse = await openEditCourseDialog(this.dialog, {
+      mode: 'create',
+      title: 'Add new course',
+    })
+    this.onCourseUpdate(newCourse);
   }
 }

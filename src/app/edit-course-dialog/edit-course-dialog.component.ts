@@ -36,16 +36,20 @@ export class EditCourseDialogComponent {
 
   constructor() {
     this.form.patchValue({
-      title: this.data.course.title,
-      description: this.data.course.longDescription,
-      category: this.data.course.category,
-      courseImg: this.data.course.iconUrl,
+      title: this.data.course?.title,
+      description: this.data?.course?.longDescription,
+      category: this.data.course?.category,
+      courseImg: this.data.course?.iconUrl,
     });
   }
 
   async onSave() {
     const courseData = this.form.value as Partial<Course>;
-    await this.updateCourse(courseData, this.data.course.id);
+    if (this.data.mode === 'update') {
+      await this.updateCourse(courseData, this.data.course.id);
+    } else if (this.data.mode === 'create') {
+      await this.createCourse(courseData);
+    }
   }
 
   async updateCourse(course: Partial<Course>, courseId: string) {
@@ -55,6 +59,16 @@ export class EditCourseDialogComponent {
     } catch (error) {
       console.warn(error);
       alert('There was a problem updating the course.')
+    }
+  }
+
+  async createCourse(course: Partial<Course>) {
+    try {
+      const newCourse = await this.coursesService.createCourse(course);
+      this.dialogRef.close(newCourse);
+    } catch (error) {
+      console.warn(error);
+      alert('There was an error creating the course.');
     }
   }
 
