@@ -5,6 +5,7 @@ import { Course, sortCoursesBySeqNo } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
 import { MatDialog } from '@angular/material/dialog';
 import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.component';
+import { MessagesService } from '../messages/messages.service';
 
 @Component({
     selector: 'home',
@@ -19,7 +20,9 @@ import { openEditCourseDialog } from '../edit-course-dialog/edit-course-dialog.c
 export class HomeComponent {
   // private readonly coursesServiceWithFetch = inject(CoursesServiceWithFetch);
   private readonly coursesServiceHttp = inject(CoursesService);
+  private readonly messagesService = inject(MessagesService);
   dialog = inject(MatDialog);
+
 
   #courses = signal<Course[]>([]);
 
@@ -50,6 +53,7 @@ export class HomeComponent {
       this.#courses.set(orderedCourses);
     } catch (error) {
       console.warn('Error loading courses: ', error);
+      this.messagesService.showMessage({ severity: 'error' , text: 'Error fetching courses..'})
     }
   }
 
@@ -57,7 +61,7 @@ export class HomeComponent {
     // const courses = this.#courses();
     // const newCourses = courses.map( c => c.id === course.id ? course : c);
     // this.#courses.set(newCourses);
-    
+
     this.#courses.update(
       courses => courses.map(c => c.id === course.id ? course : c)
     )

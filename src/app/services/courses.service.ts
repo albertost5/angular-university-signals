@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { delay, finalize, firstValueFrom, map, tap } from "rxjs";
+import { delay, finalize, firstValueFrom, map, tap, throwError } from "rxjs";
 import { environment } from "../../environments/environment";
 import { LoadingService } from "../loading/loading.service";
 import { Course } from "../models/course.model";
