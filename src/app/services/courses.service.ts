@@ -1,21 +1,26 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { firstValueFrom, map } from "rxjs";
+import { delay, finalize, firstValueFrom, map, tap } from "rxjs";
+import { environment } from "../../environments/environment";
+import { LoadingService } from "../loading/loading.service";
 import { Course } from "../models/course.model";
 import { GetCoursesResponse } from "../models/get-courses.response";
-import { environment } from "../../environments/environment";
 
 
 @Injectable({
   providedIn: "root"
 })
 export class CoursesService {
+  private loadingService = inject(LoadingService);
   private http = inject(HttpClient);
   private env = environment
 
   loadAllCourses(): Promise<Course[]> {
     return firstValueFrom(this.http.get<GetCoursesResponse>(`${this.env.baseUrl}/courses`).pipe(
-      map(res => res.courses)
+      tap(() => this.loadingService.loadingToggleOn()),
+      delay(5000),
+      map(res => res.courses),
+      finalize(() => this.loadingService.loadingToggleOff())
     ));
   }
 

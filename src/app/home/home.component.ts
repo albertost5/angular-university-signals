@@ -54,9 +54,13 @@ export class HomeComponent {
   }
 
   onCourseUpdate(course: Course) {
-    const courses = this.#courses();
-    const newCourses = courses.map( c => c.id === course.id ? course : c);
-    this.#courses.set(newCourses);
+    // const courses = this.#courses();
+    // const newCourses = courses.map( c => c.id === course.id ? course : c);
+    // this.#courses.set(newCourses);
+    
+    this.#courses.update(
+      courses => courses.map(c => c.id === course.id ? course : c)
+    )
   }
 
   async onDeletedCourse(courseId: string) {
