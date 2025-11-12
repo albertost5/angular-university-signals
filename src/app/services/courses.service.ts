@@ -17,10 +17,10 @@ export class CoursesService {
 
   loadAllCourses(): Promise<Course[]> {
     return firstValueFrom(this.http.get<GetCoursesResponse>(`${this.env.baseUrl}/courses`).pipe(
-      tap(() => this.loadingService.loadingToggleOn()),
-      delay(5000),
+      // tap(() => this.loadingService.loadingToggleOn()),
+      delay(2500),
       map(res => res.courses),
-      finalize(() => this.loadingService.loadingToggleOff())
+      // finalize(() => this.loadingService.loadingToggleOff())
     ));
   }
 
