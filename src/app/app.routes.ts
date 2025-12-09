@@ -7,7 +7,7 @@ import {LinkedSignalDemoComponent} from "./linked-signal/linked-signal-demo.comp
 
 export const routes: Routes = [
   {
-    path: '',
+    path: 'home',
     component: HomeComponent
   },
   {
@@ -28,6 +28,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/'
+    redirectTo: '/home'
   }
 ];
