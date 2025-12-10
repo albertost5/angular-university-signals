@@ -4,19 +4,22 @@ import {LoginComponent} from "./login/login.component";
 import {LessonsComponent} from "./lessons/lessons.component";
 import {ResourceDemoComponent} from "./resource-demo/resource-demo.component";
 import {LinkedSignalDemoComponent} from "./linked-signal/linked-signal-demo.component";
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   {
     path: 'home',
-    component: HomeComponent
+    component: HomeComponent,
+    canActivate: [authGuard]
   },
   {
     path: "login",
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: "lessons",
-    component: LessonsComponent
+    component: LessonsComponent,
+    canActivate: [authGuard]
   },
   {
     path:"shopping-cart",

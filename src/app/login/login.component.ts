@@ -39,7 +39,6 @@ export class LoginComponent {
           });
         }
     } else {
-      console.log('form value => ', this.loginForm.value)
       this.messageService.showMessage({
         severity: 'error',
         text: 'Please fill in the form correctly before submitting.'
