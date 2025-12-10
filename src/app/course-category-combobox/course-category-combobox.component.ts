@@ -9,6 +9,10 @@ import {CourseCategory} from "../models/course-category.model";
   styleUrl: './course-category-combobox.component.scss'
 })
 export class CourseCategoryComboboxComponent {
+  label = input.required<string>();
+  categoryValue = model.required<CourseCategory>();
 
-
+  onCategoryChanged(categorySelected: string) {
+    this.categoryValue.set(categorySelected as CourseCategory);
+  }
 }

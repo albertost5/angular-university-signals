@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -8,6 +8,7 @@ import { LoadingIndicatorComponent } from "../loading/loading.component";
 import { Course } from '../models/course.model';
 import { CoursesService } from '../services/courses.service';
 import { EditCourseDialogData } from './edit-course-dialog.data.model';
+import { CourseCategory } from '../models/course-category.model';
 
 @Component({
   selector: 'edit-course-dialog',
@@ -25,12 +26,12 @@ export class EditCourseDialogComponent {
   data = inject(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef)
   fb = inject(FormBuilder);
-  coursesService = inject(CoursesService)
+  coursesService = inject(CoursesService);
+  category = signal<CourseCategory>('BEGINNER');
 
   form = this.fb.group({
     title: [''],
     description: [''],
-    category: [''],
     courseImg: [''],
   });
 
@@ -38,13 +39,14 @@ export class EditCourseDialogComponent {
     this.form.patchValue({
       title: this.data.course?.title,
       description: this.data?.course?.longDescription,
-      category: this.data.course?.category,
       courseImg: this.data.course?.iconUrl,
     });
+    this.category.set(this.data.course?.category);
   }
 
   async onSave() {
     const courseData = this.form.value as Partial<Course>;
+    courseData.category = this.category();
     if (this.data.mode === 'update') {
       await this.updateCourse(courseData, this.data.course.id);
     } else if (this.data.mode === 'create') {

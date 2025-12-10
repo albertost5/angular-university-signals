@@ -61,10 +61,11 @@ export class HomeComponent {
     // const courses = this.#courses();
     // const newCourses = courses.map( c => c.id === course.id ? course : c);
     // this.#courses.set(newCourses);
-
-    this.#courses.update(
-      courses => courses.map(c => c.id === course.id ? course : c)
-    )
+    if (course) {
+      this.#courses.update(
+        courses => courses.map(c => c.id === course.id ? course : c)
+      );
+    }
   }
 
   async onDeletedCourse(courseId: string) {
